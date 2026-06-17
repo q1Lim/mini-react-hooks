@@ -1,5 +1,6 @@
 import "./style.css";
-import { useState, setRerender, resetHookIndex } from "./hooks/useState";
+import { useState, setRerender } from "./hooks/useState";
+import { resetHookIndex } from "./hooks/hookCore";
 
 const root = document.querySelector("#app");
 

@@ -1,5 +1,6 @@
+import { getNextHookIndex } from "./hookCore";
+
 let states = [];
-let hookIndex = 0;
 let rerender;
 let isRenderScheduled = false;
 
@@ -7,11 +8,6 @@ let isRenderScheduled = false;
 export function setRerender(callback) {
 	console.log("render callback 등록");
 	rerender = callback;
-}
-
-// 렌더 전에 hookIndex를 초기화하기 위해 정의
-export function resetHookIndex() {
-	hookIndex = 0;
 }
 
 // batching을 위한 스케쥴 함수 구현
@@ -30,7 +26,7 @@ export function scheduleRerender() {
 }
 
 export function useState(initialState) {
-	const currentIndex = hookIndex;
+	const currentIndex = getNextHookIndex();
 
 	if (states[currentIndex] === undefined) {
 		// initialState가 함수인 경우 함수 실행한 값 넣기
@@ -54,6 +50,5 @@ export function useState(initialState) {
 
 		scheduleRerender();
 	}
-	hookIndex++;
 	return [states[currentIndex], setState];
 }
