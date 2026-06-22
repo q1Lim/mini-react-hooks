@@ -2,6 +2,7 @@ import "./style.css";
 import { useState, setRerender } from "./hooks/useState";
 import { resetHookIndex } from "./hooks/hookCore";
 import { useRef } from "./hooks/useRef";
+import { runPendingEffects, useEffect } from "./hooks/useEffect";
 
 const root = document.querySelector("#app");
 
@@ -13,6 +14,13 @@ function App() {
 
 	const timerId = useRef(0);
 	const [timer, setTimer] = useState(0);
+
+	const [effectValue, setEffectValue] = useState(0);
+
+	useEffect(() => {
+		console.log("useEffect 실행됨! effectValue:", effectValue);
+		return () => console.log("cleanup 실행됨! 이전 effectValue:", effectValue);
+	}, [effectValue]);
 
 	return {
 		html: `
@@ -34,6 +42,13 @@ function App() {
 					<button type="button" id="startButton">Start!</button>
 					<button type="button" id="stopButton">Stop!</button>				
 					<p>Timer: ${timer}s</p>
+			</section>
+			<br/>
+			<section>
+				<h2>useEffect</h2>
+				<p>EffectValue</p>
+					<button type="button" id="effectButton">Increment effectValue</button>	
+					<p>EffectValue: ${effectValue}</p>
 			</section>
 		</main>
     `,
@@ -61,6 +76,9 @@ function App() {
 				clearInterval(timerId.current);
 				timerId.current = 0;
 			},
+			clickEffectbutton: () => {
+				setEffectValue((prev) => prev + 6);
+			},
 		},
 	};
 }
@@ -72,17 +90,24 @@ function render() {
 
 	root.innerHTML = app.html;
 
+	// DOM이 갱신된 후 effects 실행
+	runPendingEffects();
+
 	const button1 = document.querySelector("#button1");
 	const button2 = document.querySelector("#button2");
 
 	const startButton = document.querySelector("#startButton");
 	const stopButton = document.querySelector("#stopButton");
 
+	const effectButton = document.querySelector("#effectButton");
+
 	button1.addEventListener("click", app.events.clickCountButton);
 	button2.addEventListener("click", app.events.clickStepButton);
 
 	startButton.addEventListener("click", app.events.clickStartButton);
 	stopButton.addEventListener("click", app.events.clickStopButton);
+
+	effectButton.addEventListener("click", app.events.clickEffectbutton);
 
 	console.log("render");
 }
