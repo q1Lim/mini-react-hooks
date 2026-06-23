@@ -20,6 +20,19 @@ export function runPendingEffects() {
 
 export function useEffect(callback, deps) {
 	const currentIndex = getNextHookIndex();
+
+	// deps에 값을 채우지 않은 경우
+	if (deps === undefined) {
+		const currentEffect = effects[currentIndex];
+		pendingEffects.push({
+			index: currentIndex,
+			callback: callback,
+			cleanup: currentEffect?.cleanup,
+		});
+		effects[currentIndex] = { deps };
+		return;
+	}
+
 	// 얕은 비교를 통해 deps가 같은 것인지 확인
 	const isSameDeps = shallowEqual(effects[currentIndex]?.deps, deps);
 
