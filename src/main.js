@@ -3,6 +3,7 @@ import { useState, setRerender } from "./hooks/useState";
 import { resetHookIndex } from "./hooks/hookCore";
 import { useRef } from "./hooks/useRef";
 import { runPendingEffects, useEffect } from "./hooks/useEffect";
+import { useMemo } from "./hooks/useMemo";
 
 const root = document.querySelector("#app");
 
@@ -22,6 +23,14 @@ function App() {
 		return () => console.log("cleanup 실행됨! 이전 effectValue:", effectValue);
 	}, [effectValue]);
 
+	const [memoA, setMemoA] = useState(0);
+	const [memoB, setMemoB] = useState(0);
+
+	const memoizedValue = useMemo(() => {
+		console.log("useMemo: 재계산!");
+		return memoA * 2;
+	}, [memoA]);
+
 	return {
 		html: `
 		<main>
@@ -38,7 +47,7 @@ function App() {
 			<br/>
 			<section>
 				<h2>useRef</h2>
-				<p>Timer</p>
+					<p>Timer</p>
 					<button type="button" id="startButton">Start!</button>
 					<button type="button" id="stopButton">Stop!</button>				
 					<p>Timer: ${timer}s</p>
@@ -46,9 +55,24 @@ function App() {
 			<br/>
 			<section>
 				<h2>useEffect</h2>
-				<p>EffectValue</p>
+					<p>EffectValue</p>
 					<button type="button" id="effectButton">Increment effectValue</button>	
 					<p>EffectValue: ${effectValue}</p>
+			</section>
+			<br/>
+			<section>
+				<h2>useMemo</h2>
+					<div style="display: flex; gap: 16px; justify-content: center;">
+    					<div>
+        					<button type="button" id="memoAButton">Increment memoA</button>
+        					<p>memoA: ${memoA}</p>
+    					</div>
+    					<div>
+        					<button type="button" id="memoBButton">Increment memoB(unrelated)</button>
+        					<p>memoB: ${memoB}</p>
+    					</div>
+					</div>
+				<p>memoizedValue: ${memoizedValue}</p>
 			</section>
 		</main>
     `,
@@ -76,8 +100,14 @@ function App() {
 				clearInterval(timerId.current);
 				timerId.current = 0;
 			},
-			clickEffectbutton: () => {
+			clickEffectButton: () => {
 				setEffectValue((prev) => prev + 6);
+			},
+			clickMemoAButton: () => {
+				setMemoA((prev) => prev + 1);
+			},
+			clickMemoBButton: () => {
+				setMemoB((prev) => prev + 1);
 			},
 		},
 	};
@@ -101,13 +131,19 @@ function render() {
 
 	const effectButton = document.querySelector("#effectButton");
 
+	const memoAButton = document.querySelector("#memoAButton");
+	const memoBButton = document.querySelector("#memoBButton");
+
 	button1.addEventListener("click", app.events.clickCountButton);
 	button2.addEventListener("click", app.events.clickStepButton);
 
 	startButton.addEventListener("click", app.events.clickStartButton);
 	stopButton.addEventListener("click", app.events.clickStopButton);
 
-	effectButton.addEventListener("click", app.events.clickEffectbutton);
+	effectButton.addEventListener("click", app.events.clickEffectButton);
+
+	memoAButton.addEventListener("click", app.events.clickMemoAButton);
+	memoBButton.addEventListener("click", app.events.clickMemoBButton);
 
 	console.log("render");
 }
