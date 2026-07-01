@@ -4,6 +4,7 @@ import { resetHookIndex } from "./hooks/hookCore";
 import { useRef } from "./hooks/useRef";
 import { runPendingEffects, useEffect } from "./hooks/useEffect";
 import { useMemo } from "./hooks/useMemo";
+import { useCallback } from "./hooks/useCallback";
 
 const root = document.querySelector("#app");
 
@@ -30,6 +31,18 @@ function App() {
 		console.log("useMemo: 재계산!");
 		return memoA * 2;
 	}, [memoA]);
+
+	const [callbackA, setCallbackA] = useState(0);
+	const [callbackB, setCallbackB] = useState(0);
+
+	const prevFnRef = useRef(null);
+
+	const cachedFn = useCallback(() => {
+		console.log("callbackDep:", callbackA);
+	}, [callbackA]);
+
+	console.log("same reference?", prevFnRef.current === cachedFn);
+	prevFnRef.current = cachedFn;
 
 	return {
 		html: `
@@ -64,15 +77,29 @@ function App() {
 				<h2>useMemo</h2>
 					<div style="display: flex; gap: 16px; justify-content: center;">
     					<div>
-        					<button type="button" id="memoAButton">Increment memoA</button>
+        					<button type="button" id="memoAButton">Increment memo A</button>
         					<p>memoA: ${memoA}</p>
     					</div>
     					<div>
-        					<button type="button" id="memoBButton">Increment memoB(unrelated)</button>
+        					<button type="button" id="memoBButton">Increment memo B(unrelated)</button>
         					<p>memoB: ${memoB}</p>
     					</div>
 					</div>
 				<p>memoizedValue: ${memoizedValue}</p>
+			</section>
+			<br/>
+			<section>
+				<h2>useCallback</h2>
+					<div style="display: flex; gap: 16px; justify-content: center;">
+    					<div>
+        					<button type="button" id="callbackAButton">Increment callback A</button>
+        					<p>memoA: ${callbackA}</p>
+    					</div>
+    					<div>
+        					<button type="button" id="callbackBButton">Increment callback B(unrelated)</button>
+        					<p>memoB: ${callbackB}</p>
+    					</div>
+					</div>
 			</section>
 		</main>
     `,
@@ -109,6 +136,12 @@ function App() {
 			clickMemoBButton: () => {
 				setMemoB((prev) => prev + 1);
 			},
+			clickCallbackAButton: () => {
+				setCallbackA((prev) => prev + 10);
+			},
+			clickCallbackBButton: () => {
+				setCallbackB((prev) => prev + 10);
+			},
 		},
 	};
 }
@@ -134,6 +167,9 @@ function render() {
 	const memoAButton = document.querySelector("#memoAButton");
 	const memoBButton = document.querySelector("#memoBButton");
 
+	const callbackAButton = document.querySelector("#callbackAButton");
+	const callbackBButton = document.querySelector("#callbackBButton");
+
 	button1.addEventListener("click", app.events.clickCountButton);
 	button2.addEventListener("click", app.events.clickStepButton);
 
@@ -144,6 +180,9 @@ function render() {
 
 	memoAButton.addEventListener("click", app.events.clickMemoAButton);
 	memoBButton.addEventListener("click", app.events.clickMemoBButton);
+
+	callbackAButton.addEventListener("click", app.events.clickCallbackAButton);
+	callbackBButton.addEventListener("click", app.events.clickCallbackBButton);
 
 	console.log("render");
 }
