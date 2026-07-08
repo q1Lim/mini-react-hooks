@@ -1,12 +1,25 @@
 import "./style.css";
-import { useState, setRerender } from "./hooks/useState";
-import { resetHookIndex } from "./hooks/hookCore";
+import { useState } from "./hooks/useState";
+import { resetHookIndex, setRerender } from "./hooks/hookCore";
 import { useRef } from "./hooks/useRef";
 import { runPendingEffects, useEffect } from "./hooks/useEffect";
 import { useMemo } from "./hooks/useMemo";
 import { useCallback } from "./hooks/useCallback";
+import { useReducer } from "./hooks/useReducer";
 
 const root = document.querySelector("#app");
+
+function counterReducer(reducerState, action) {
+	switch (action.type) {
+		case "INCREMENT":
+			return reducerState + 1;
+		case "DECREMENT":
+			return reducerState - 1;
+		case "RESET":
+			reducerState = 0;
+			return reducerState;
+	}
+}
 
 function App() {
 	const [count, setCount] = useState(() => {
@@ -43,6 +56,8 @@ function App() {
 
 	console.log("same reference?", prevFnRef.current === cachedFn);
 	prevFnRef.current = cachedFn;
+
+	const [reducerState, setReducerState] = useReducer(counterReducer, 0);
 
 	return {
 		html: `
@@ -101,6 +116,22 @@ function App() {
     					</div>
 					</div>
 			</section>
+			<br/>
+			<section>
+				<h2>useReducer</h2>
+					<div style="display: flex; gap: 16px; justify-content: center;">
+    					<div>
+        					<button type="button" id="reducerIButton">Increment reducer</button>
+    					</div>
+    					<div>
+        					<button type="button" id="reducerDButton">decrement reducer</button>
+    					</div>
+						<div>
+        					<button type="button" id="reducerRButton">Reset reducer</button>
+    					</div>
+					</div>
+					<p>Reducer: ${reducerState}</p>
+			</section>
 		</main>
     `,
 		events: {
@@ -142,6 +173,15 @@ function App() {
 			clickCallbackBButton: () => {
 				setCallbackB((prev) => prev + 10);
 			},
+			clickReducerIButton: () => {
+				setReducerState({ type: "INCREMENT" });
+			},
+			clickReducerDButton: () => {
+				setReducerState({ type: "DECREMENT" });
+			},
+			clickReducerRButton: () => {
+				setReducerState({ type: "RESET" });
+			},
 		},
 	};
 }
@@ -170,6 +210,10 @@ function render() {
 	const callbackAButton = document.querySelector("#callbackAButton");
 	const callbackBButton = document.querySelector("#callbackBButton");
 
+	const reducerIButton = document.querySelector("#reducerIButton");
+	const reducerDButton = document.querySelector("#reducerDButton");
+	const reducerRButton = document.querySelector("#reducerRButton");
+
 	button1.addEventListener("click", app.events.clickCountButton);
 	button2.addEventListener("click", app.events.clickStepButton);
 
@@ -183,6 +227,10 @@ function render() {
 
 	callbackAButton.addEventListener("click", app.events.clickCallbackAButton);
 	callbackBButton.addEventListener("click", app.events.clickCallbackBButton);
+
+	reducerIButton.addEventListener("click", app.events.clickReducerIButton);
+	reducerDButton.addEventListener("click", app.events.clickReducerDButton);
+	reducerRButton.addEventListener("click", app.events.clickReducerRButton);
 
 	console.log("render");
 }
