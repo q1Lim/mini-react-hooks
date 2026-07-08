@@ -135,15 +135,15 @@ function App() {
 		</main>
     `,
 		events: {
-			clickCountButton: () => {
+			button1: () => {
 				setCount((prev) => prev + 1);
 				setCount((prev) => prev + 1);
 				setCount((prev) => prev + 1);
 			},
-			clickStepButton: () => {
+			button2: () => {
 				setStep(step + 1);
 			},
-			clickStartButton: () => {
+			startButton: () => {
 				if (timerId.current !== 0) {
 					return;
 				}
@@ -154,32 +154,32 @@ function App() {
 
 				timerId.current = id;
 			},
-			clickStopButton: () => {
+			stopButton: () => {
 				clearInterval(timerId.current);
 				timerId.current = 0;
 			},
-			clickEffectButton: () => {
+			effectButton: () => {
 				setEffectValue((prev) => prev + 6);
 			},
-			clickMemoAButton: () => {
+			memoAButton: () => {
 				setMemoA((prev) => prev + 1);
 			},
-			clickMemoBButton: () => {
+			memoBButton: () => {
 				setMemoB((prev) => prev + 1);
 			},
-			clickCallbackAButton: () => {
+			callbackAButton: () => {
 				setCallbackA((prev) => prev + 10);
 			},
-			clickCallbackBButton: () => {
+			callbackBButton: () => {
 				setCallbackB((prev) => prev + 10);
 			},
-			clickReducerIButton: () => {
+			reducerIButton: () => {
 				setReducerState({ type: "INCREMENT" });
 			},
-			clickReducerDButton: () => {
+			reducerDButton: () => {
 				setReducerState({ type: "DECREMENT" });
 			},
-			clickReducerRButton: () => {
+			reducerRButton: () => {
 				setReducerState({ type: "RESET" });
 			},
 		},
@@ -196,41 +196,9 @@ function render() {
 	// DOM이 갱신된 후 effects 실행
 	runPendingEffects();
 
-	const button1 = document.querySelector("#button1");
-	const button2 = document.querySelector("#button2");
-
-	const startButton = document.querySelector("#startButton");
-	const stopButton = document.querySelector("#stopButton");
-
-	const effectButton = document.querySelector("#effectButton");
-
-	const memoAButton = document.querySelector("#memoAButton");
-	const memoBButton = document.querySelector("#memoBButton");
-
-	const callbackAButton = document.querySelector("#callbackAButton");
-	const callbackBButton = document.querySelector("#callbackBButton");
-
-	const reducerIButton = document.querySelector("#reducerIButton");
-	const reducerDButton = document.querySelector("#reducerDButton");
-	const reducerRButton = document.querySelector("#reducerRButton");
-
-	button1.addEventListener("click", app.events.clickCountButton);
-	button2.addEventListener("click", app.events.clickStepButton);
-
-	startButton.addEventListener("click", app.events.clickStartButton);
-	stopButton.addEventListener("click", app.events.clickStopButton);
-
-	effectButton.addEventListener("click", app.events.clickEffectButton);
-
-	memoAButton.addEventListener("click", app.events.clickMemoAButton);
-	memoBButton.addEventListener("click", app.events.clickMemoBButton);
-
-	callbackAButton.addEventListener("click", app.events.clickCallbackAButton);
-	callbackBButton.addEventListener("click", app.events.clickCallbackBButton);
-
-	reducerIButton.addEventListener("click", app.events.clickReducerIButton);
-	reducerDButton.addEventListener("click", app.events.clickReducerDButton);
-	reducerRButton.addEventListener("click", app.events.clickReducerRButton);
+	Object.entries(app.events).forEach(([id, handler]) => {
+		document.querySelector(`#${id}`)?.addEventListener("click", handler);
+	});
 
 	console.log("render");
 }
