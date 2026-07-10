@@ -2,13 +2,12 @@ import { getNextHookIndex, scheduleRerender } from "./hookCore";
 
 let states = [];
 
-export function useReducer(reducer, initialArg) {
+export function useReducer(reducer, initialArg, init) {
 	const currentIndex = getNextHookIndex();
 
 	if (states[currentIndex] === undefined) {
 		// initialState가 함수인 경우 함수 실행한 값 넣기
-		const initialValue = typeof initialArg === "function" ? initialArg() : initialArg;
-
+		const initialValue = init ? init(initialArg) : initialArg;
 		states[currentIndex] = initialValue;
 	}
 
