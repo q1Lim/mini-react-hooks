@@ -6,8 +6,12 @@ import { runPendingEffects, useEffect } from "./hooks/useEffect";
 import { useMemo } from "./hooks/useMemo";
 import { useCallback } from "./hooks/useCallback";
 import { useReducer } from "./hooks/useReducer";
+import { createContext } from "./hooks/createContext";
+import { useContext } from "./hooks/useContext";
 
 const root = document.querySelector("#app");
+
+const ThemeContext = createContext();
 
 function counterReducer(reducerState, action) {
 	switch (action.type) {
@@ -58,6 +62,9 @@ function App() {
 	prevFnRef.current = cachedFn;
 
 	const [reducerState, setReducerState] = useReducer(counterReducer, 0);
+
+	ThemeContext.Provider("dark");
+	const theme = useContext(ThemeContext);
 
 	return {
 		html: `
@@ -131,6 +138,11 @@ function App() {
     					</div>
 					</div>
 					<p>Reducer: ${reducerState}</p>
+			</section>
+			<br/>
+			<section>
+				<h2>useContext</h2>
+					<p>theme: ${theme}</p>
 			</section>
 		</main>
     `,
