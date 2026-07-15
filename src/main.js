@@ -13,6 +13,8 @@ const root = document.querySelector("#app");
 
 const ThemeContext = createContext();
 
+ThemeContext.Provider("dark");
+
 function counterReducer(reducerState, action) {
 	switch (action.type) {
 		case "INCREMENT":
@@ -63,7 +65,6 @@ function App() {
 
 	const [reducerState, setReducerState] = useReducer(counterReducer, 0);
 
-	ThemeContext.Provider("dark");
 	const theme = useContext(ThemeContext);
 
 	return {
@@ -143,6 +144,7 @@ function App() {
 			<section>
 				<h2>useContext</h2>
 					<p>theme: ${theme}</p>
+					<button type="button" id="themeButton">Toggle Theme</button>
 			</section>
 		</main>
     `,
@@ -193,6 +195,10 @@ function App() {
 			},
 			reducerRButton: () => {
 				setReducerState({ type: "RESET" });
+			},
+			themeButton: () => {
+				const next = ThemeContext._value === "dark" ? "light" : "dark";
+				ThemeContext.Provider(next);
 			},
 		},
 	};
