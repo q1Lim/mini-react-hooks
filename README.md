@@ -68,6 +68,16 @@ Vanilla JS로 React Hook을 직접 구현하며 동작 원리를 학습하는 �
 - `useContext(context)`는 `context._value`를 꺼내 반환
 - 컴포넌트 트리 없이 전역 값 공유 흐름을 단순 구현
 
+## 가상 DOM & reconcile
+
+> [Vanilla JS로 React Hook 구현하기 - 가상 DOM과 reconcile](https://velog.io/@cochlea00/Vanilla-JS%EB%A1%9C-React-Hook-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EA%B0%80%EC%83%81-DOM%EA%B3%BC-reconcile)
+
+- `createElement`로 JSX를 `{ type, props, children }` 형태의 가상 DOM 객체로 변환
+- `createDOMNode`로 가상 DOM 객체를 실제 DOM 노드로 생성 (초기 렌더 및 type 교체 시 사용)
+- `reconcile`로 이전·새 가상 DOM을 비교해 달라진 부분만 실제 DOM에 반영
+- `prevVDom`을 전역으로 유지해 렌더마다 이전 트리와 비교 가능하도록 구현
+- Vite esbuild 옵션(`jsxFactory`, `jsxInject`)으로 커스텀 `createElement`에 JSX 연결
+
 ## 기술 스택
 
 - Vanilla JS
