@@ -3,6 +3,7 @@
 Vanilla JS로 React Hook을 직접 구현하며 동작 원리를 학습하는 프로젝트입니다.
 
 ## 학습 블로그
+(https://velog.io/@cochlea00/series/Mini-React)
 
 구현 과정과 원리를 정리한 글을 블로그에 기록하고 있습니다.
 
